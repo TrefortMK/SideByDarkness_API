@@ -15,7 +15,118 @@ datasource db {
 
 model User {
   id       Int    @id @default(autoincrement())
-  email    String 
+  email    String
   username String
   password String
+}
+
+model Type {
+  type_id   Int      @id @default(autoincrement())
+  type_name String?  @db.VarChar(50)
+  Skill     Skill[]
+  Buff      Buff[]
+  Debuff    Debuff[]
+}
+
+model Skill {
+  skill_id Int    @id @default(autoincrement())
+  type_id  Int
+  name     String @db.VarChar(50)
+  amount   Int
+  Type     Type   @relation(fields: [type_id], references: [type_id])
+}
+
+model Buff {
+  buff_id    Int          @id @default(autoincrement())
+  type_id    Int
+  name       String       @db.VarChar(50)
+  amount     Int
+  Type       Type         @relation(fields: [type_id], references: [type_id])
+  ItemBuff   ItemBuff[]
+  WeaponBuff WeaponBuff[]
+}
+
+model Debuff {
+  debuff_id    Int            @id @default(autoincrement())
+  type_id      Int
+  name         String         @db.VarChar(50)
+  amount       Int
+  Type         Type           @relation(fields: [type_id], references: [type_id])
+  ItemDebuff   ItemDebuff[]
+  WeaponDebuff WeaponDebuff[]
+}
+
+model Item {
+  item_id      Int          @id @default(autoincrement())
+  name         String       @db.VarChar(50)
+  description  String?      @db.VarChar(255)
+  base_stat_id Int?
+  ItemBuff     ItemBuff[]
+  ItemDebuff   ItemDebuff[]
+}
+
+model ItemBuff {
+  item_id Int
+  buff_id Int
+  Item    Item @relation(fields: [item_id], references: [item_id])
+  Buff    Buff @relation(fields: [buff_id], references: [buff_id])
+
+  @@id([item_id, buff_id])
+}
+
+model ItemDebuff {
+  item_id   Int
+  debuff_id Int
+  Item      Item   @relation(fields: [item_id], references: [item_id])
+  Debuff    Debuff @relation(fields: [debuff_id], references: [debuff_id])
+
+  @@id([item_id, debuff_id])
+}
+
+model Weapon {
+  weapon_id         Int                 @id @default(autoincrement())
+  name              String              @db.VarChar(50)
+  damage            Int
+  critical_chance   Float
+  WeaponBuff        WeaponBuff[]
+  WeaponDebuff      WeaponDebuff[]
+  WeaponEnhancement WeaponEnhancement[]
+}
+
+model WeaponBuff {
+  weapon_id Int
+  buff_id   Int
+  Weapon    Weapon @relation(fields: [weapon_id], references: [weapon_id])
+  Buff      Buff   @relation(fields: [buff_id], references: [buff_id])
+
+  @@id([weapon_id, buff_id])
+}
+
+model WeaponDebuff {
+  weapon_id Int
+  debuff_id Int
+  Weapon    Weapon @relation(fields: [weapon_id], references: [weapon_id])
+  Debuff    Debuff @relation(fields: [debuff_id], references: [debuff_id])
+
+  @@id([weapon_id, debuff_id])
+}
+
+model WeaponEnhancement {
+  weapon_id   Int
+  enhancement String @db.VarChar(50)
+  Weapon      Weapon @relation(fields: [weapon_id], references: [weapon_id])
+
+  @@id([weapon_id, enhancement])
+}
+
+model Player {
+  player_id       Int    @id @default(autoincrement())
+  username        String @db.VarChar(30)
+  profile_picture Bytes
+  email           String @db.VarChar(255)
+  password        String @db.VarChar(100)
+  best_score      Int
+  best_runtime    Int
+  playtime        Int
+  savedata        Bytes
 }
