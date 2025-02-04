@@ -4,7 +4,7 @@ const {protect} = require('../mwares/authMiddleware');
 const {
     register,
     login
-} = require('../controllers/userController');
+} = require('../controllers/userController.js');
 
 router.post("/regisztracio", register);
 router.post("/login", login);
