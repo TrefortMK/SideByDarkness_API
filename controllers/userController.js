@@ -4,15 +4,15 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient()
 
 const generateToken = (id) => {
-    return jwt.sign({id}, "szupertitkostitok", {expiresIn: "1d"});
+    return jwt.sign({ id }, "szupertitkostitok", { expiresIn: "1d" });
 }
 
 const register = async (req, res) => {
-    const {email, username, password} = req.body
+    const { email, username, password } = req.body
 
     // adat validáció
-    if(!email || !username || !password){
-        return res.json({message: "Hiányos adatok!"});
+    if (!email || !username || !password) {
+        return res.json({ message: "Hiányos adatok!" });
     }
 
     const user = await prisma.user.findFirst({
@@ -21,8 +21,8 @@ const register = async (req, res) => {
         }
     });
 
-    if(user){
-        return res.json({message: "Email-cím már használatban!"});
+    if (user) {
+        return res.json({ message: "Email-cím már használatban!" });
     }
 
     // password hash --> titkosítjuk a jelszót
@@ -43,9 +43,9 @@ const register = async (req, res) => {
 }
 
 const login = async (req, res) => {
-    const {email, password} = req.body
+    const { email, password } = req.body
     // procedurális email validálás
-    if(!email || !password){
+    if (!email || !password) {
         return res.json({
             message: "Hiányzó adatok!"
         });
@@ -59,7 +59,7 @@ const login = async (req, res) => {
 
     //if(!user) return res.json({message: "Nem létező fiók!"});
 
-    if(!user){
+    if (!user) {
         return res.json({
             message: "Nem létező fiók!"
         });
@@ -69,7 +69,7 @@ const login = async (req, res) => {
     //passMatch ? res.json({message: "Sikeres bejelentkezés!"}): res.json({message: "Helytelen jelszó!"})
     const passMatch = await argon2.verify(user.password, password);
 
-    if(passMatch){
+    if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
         const token = generateToken(user.id)
         return res.json({
