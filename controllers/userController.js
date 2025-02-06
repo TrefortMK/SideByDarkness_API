@@ -83,8 +83,57 @@ const login = async (req, res) => {
         });
     }
 }
+const update = async (req, res) => {
+    const { email, password } = req.body
+    // procedurális email validálás
+    if (!email || !password) {
+        return res.json({
+            message: "Hiányzó adatok!"
+        });
+    }
+    const user = await prisma.user.findFirst({
+        where: {
+            email: email
+        }
+    });
+
+
+    //if(!user) return res.json({message: "Nem létező fiók!"});
+
+    if (!user) {
+        return res.json({
+            message: "Nem létező fiók!"
+        });
+    }
+
+
+    //passMatch ? res.json({message: "Sikeres bejelentkezés!"}): res.json({message: "Helytelen jelszó!"})
+    const passMatch = await argon2.verify(user.password, password);
+
+    const hash = await argon2.hash(password);
+    console.log("te")
+    if (passMatch) {
+        // token --> hitelesítő eszköz --> kulcs
+
+        const updateUser = await prisma.user.update({
+            where: {
+              email: email,
+            },
+            data: {
+              password: hash,
+            },
+          })
+
+        res.json({
+            message: "Sikeres jelszóváltozatás",
+            updateUser
+        });
+    
+    }
+}
 
 module.exports = {
     register,
-    login
+    login,
+    update
 }
