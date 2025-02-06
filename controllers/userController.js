@@ -111,10 +111,10 @@ const update = async (req, res) => {
     const passMatch = await argon2.verify(user.password, password);
 
     const hash = await argon2.hash(password);
-    console.log("te")
+    
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-
+        console.log(hash)
         const updateUser = await prisma.user.update({
             where: {
               email: email,
@@ -129,6 +129,10 @@ const update = async (req, res) => {
             updateUser
         });
     
+    } else {
+        return res.json({
+            message: "valami :)"
+        });
     }
 }
 

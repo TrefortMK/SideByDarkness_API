@@ -9,7 +9,7 @@ const {
 
 router.post("/regisztracio", register);
 router.post("/login", login);
-router.patch("/update", update);
+router.post("/update", update);
 
 
 module.exports = router
