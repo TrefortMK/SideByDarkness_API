@@ -4,12 +4,12 @@ const {protect} = require('../mwares/authMiddleware');
 const {
     register,
     login,
-    update
+    forgotPassword
 } = require('../controllers/userController.js');
 
 router.post("/regisztracio", register);
 router.post("/login", login);
-router.post("/update", update);
+router.post("/forgotpass", forgotPassword);
 
 
 module.exports = router

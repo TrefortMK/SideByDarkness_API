@@ -83,10 +83,10 @@ const login = async (req, res) => {
         });
     }
 }
-const update = async (req, res) => {
-    const { email, password } = req.body
+const forgotPassword = async (req, res) => {
+    const { email, password, newPassword } = req.body
     // procedurális email validálás
-    if (!email || !password) {
+    if (!email || !password || !newPassword) {
         return res.json({
             message: "Hiányzó adatok!"
         });
@@ -110,25 +110,27 @@ const update = async (req, res) => {
     //passMatch ? res.json({message: "Sikeres bejelentkezés!"}): res.json({message: "Helytelen jelszó!"})
     const passMatch = await argon2.verify(user.password, password);
 
-    const hash = await argon2.hash(password);
-    
+    const hash = await argon2.hash(newPassword);
+
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
         console.log(hash)
+        
         const updateUser = await prisma.user.update({
             where: {
-              email: email,
+                id: user.id,
+                email: email,
             },
             data: {
-              password: hash,
+                password: hash,
             },
-          })
+        })
 
         res.json({
             message: "Sikeres jelszóváltozatás",
             updateUser
         });
-    
+
     } else {
         return res.json({
             message: "valami :)"
@@ -139,5 +141,5 @@ const update = async (req, res) => {
 module.exports = {
     register,
     login,
-    update
+    forgotPassword
 }
