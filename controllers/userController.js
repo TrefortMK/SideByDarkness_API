@@ -114,7 +114,6 @@ const forgotPassword = async (req, res) => {
 
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-        console.log(hash)
         
         const updateUser = await prisma.user.update({
             where: {
@@ -133,7 +132,7 @@ const forgotPassword = async (req, res) => {
 
     } else {
         return res.json({
-            message: "valami :)"
+            message: "rossz a jelszo"
         });
     }
 }
@@ -143,3 +142,4 @@ module.exports = {
     login,
     forgotPassword
 }
+
