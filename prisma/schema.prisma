@@ -9,11 +9,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./prisma/game.db"
 }
 
-model User {
+/*model User {
   id       Int    @id @default(autoincrement())
   email    String
   username String
@@ -57,12 +57,26 @@ model Debuff {
 }
 
 model Item {
-  item_id      Int          @id @default(autoincrement())
-  name         String       @db.VarChar(50)
-  description  String?      @db.VarChar(255)
-  base_stat_id Int?
-  ItemBuff     ItemBuff[]
-  ItemDebuff   ItemDebuff[]
+  item_id                         Int             @id @default(autoincrement())
+  name                            String          @db.VarChar(50)
+  description                     String?         @db.VarChar(255)
+  base_stat_id                    Int?
+  ItemBuff                        ItemBuff[]
+  ItemDebuff                      ItemDebuff[]
+  Item_base_stat                  Item_base_stat? @relation(fields: [item_base_statItem_base_stat_id], references: [item_base_stat_id])
+  item_base_statItem_base_stat_id Int?
+}
+
+model Item_base_stat {
+  item_base_stat_id Int    @id @default(autoincrement())
+  item_base_stats   Int
+  Item              Item[]
+}
+
+model Weapon_base_stat {
+  weapon_base_stat_id Int      @id @default(autoincrement())
+  weapon_base_stats   Int
+  Weapon              Weapon[]
 }
 
 model ItemBuff {
@@ -84,13 +98,15 @@ model ItemDebuff {
 }
 
 model Weapon {
-  weapon_id         Int                 @id @default(autoincrement())
-  name              String              @db.VarChar(50)
-  damage            Int
-  critical_chance   Float
-  WeaponBuff        WeaponBuff[]
-  WeaponDebuff      WeaponDebuff[]
-  WeaponEnhancement WeaponEnhancement[]
+  weapon_id                           Int                 @id @default(autoincrement())
+  name                                String              @db.VarChar(50)
+  damage                              Int
+  critical_chance                     Float
+  WeaponBuff                          WeaponBuff[]
+  WeaponDebuff                        WeaponDebuff[]
+  WeaponEnhancement                   WeaponEnhancement[]
+  Weapon_base_stat                    Weapon_base_stat?   @relation(fields: [weapon_base_statWeapon_base_stat_id], references: [weapon_base_stat_id])
+  weapon_base_statWeapon_base_stat_id Int?
 }
 
 model WeaponBuff {
@@ -129,4 +145,4 @@ model Player {
   best_runtime    Int
   playtime        Int
   savedata        Bytes
-}
+}*/

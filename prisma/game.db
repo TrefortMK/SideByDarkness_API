@@ -1,0 +1,94 @@
+CREATE TABLE Type (
+    type_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_name VARCHAR(50)
+);
+
+CREATE TABLE Skill (
+    skill_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_id INT,
+    name VARCHAR(50),
+    amount INT,
+    FOREIGN KEY (type_id) REFERENCES Type(type_id)
+);
+
+CREATE TABLE Buff (
+    buff_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_id INT,
+    name VARCHAR(50),
+    amount INT,
+    FOREIGN KEY (type_id) REFERENCES Type(type_id)
+);
+
+
+CREATE TABLE Debuff (
+    debuff_id INT AUTO_INCREMENT PRIMARY KEY,
+    type_id INT,
+    name VARCHAR(50),
+    amount INT,
+    FOREIGN KEY (type_id) REFERENCES Type(type_id)
+);
+
+CREATE TABLE Item (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    description VARCHAR(255),
+    base_stat_id INT
+);
+
+CREATE TABLE ItemBuff (
+    item_id INT,
+    buff_id INT,
+    PRIMARY KEY (item_id, buff_id),
+    FOREIGN KEY (item_id) REFERENCES Item(item_id),
+    FOREIGN KEY (buff_id) REFERENCES Buff(buff_id)
+);
+
+CREATE TABLE ItemDebuff (
+    item_id INT,
+    debuff_id INT,
+    PRIMARY KEY (item_id, debuff_id),
+    FOREIGN KEY (item_id) REFERENCES Item(item_id),
+    FOREIGN KEY (debuff_id) REFERENCES Debuff(debuff_id)
+);
+
+CREATE TABLE Weapon (
+    weapon_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(50),
+    damage INT,
+    critical_chance FLOAT
+);
+
+CREATE TABLE WeaponBuff (
+    weapon_id INT,
+    buff_id INT,
+    PRIMARY KEY (weapon_id, buff_id),
+    FOREIGN KEY (weapon_id) REFERENCES Weapon(weapon_id),
+    FOREIGN KEY (buff_id) REFERENCES Buff(buff_id)
+);
+
+CREATE TABLE WeaponDebuff (
+    weapon_id INT,
+    debuff_id INT,
+    PRIMARY KEY (weapon_id, debuff_id),
+    FOREIGN KEY (weapon_id) REFERENCES Weapon(weapon_id),
+    FOREIGN KEY (debuff_id) REFERENCES Debuff(debuff_id)
+);
+
+CREATE TABLE WeaponEnhancement (
+    weapon_id INT,
+    enhancement VARCHAR(50),
+    PRIMARY KEY (weapon_id, enhancement),
+    FOREIGN KEY (weapon_id) REFERENCES Weapon(weapon_id)
+);
+
+CREATE TABLE Player (
+    player_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(30),
+    profile_picture BLOB,
+    email VARCHAR(255),
+    password VARCHAR(100),
+    best_score INT,
+    best_runtime TIME,
+    playtime TIME,
+    savedata BLOB
+);
