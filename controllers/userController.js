@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const argon2 = require('argon2');
-const { PrismaClient } = require("@prisma/client");
+const { PrismaClient, Prisma } = require("@prisma/client");
 const prisma = new PrismaClient()
 
 const generateToken = (id) => {
@@ -72,14 +72,14 @@ const login = async (req, res) => {
 
 
     //passMatch ? res.json({message: "Sikeres bejelentkezés!"}): res.json({message: "Helytelen jelszó!"})
-    const passMatch = await argon2.verify(player.password, password);
+    const passMatch = await argon2.verify(user.password, password);
 
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-        const token = generateToken(player.id)
+        const token = generateToken(user.id)
         return res.json({
             message: "Sikeres bejelentkezés!",
-            username: player.username,
+            username: user.username,
             token
         })
     } else {

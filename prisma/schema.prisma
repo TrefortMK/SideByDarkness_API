@@ -31,7 +31,7 @@ model Type {
 model Skill {
   skill_id Int    @id @default(autoincrement())
   type_id  Int
-  name     String 
+  name     String
   amount   Int
   Type     Type   @relation(fields: [type_id], references: [type_id])
 }
@@ -39,7 +39,7 @@ model Skill {
 model Buff {
   buff_id    Int          @id @default(autoincrement())
   type_id    Int
-  name       String       
+  name       String
   amount     Int
   Type       Type         @relation(fields: [type_id], references: [type_id])
   ItemBuff   ItemBuff[]
@@ -49,7 +49,7 @@ model Buff {
 model Debuff {
   debuff_id    Int            @id @default(autoincrement())
   type_id      Int
-  name         String         
+  name         String
   amount       Int
   Type         Type           @relation(fields: [type_id], references: [type_id])
   ItemDebuff   ItemDebuff[]
@@ -58,8 +58,8 @@ model Debuff {
 
 model Item {
   item_id                         Int             @id @default(autoincrement())
-  name                            String          
-  description                     String?         
+  name                            String
+  description                     String?
   base_stat_id                    Int?
   ItemBuff                        ItemBuff[]
   ItemDebuff                      ItemDebuff[]
@@ -99,7 +99,7 @@ model ItemDebuff {
 
 model Weapon {
   weapon_id                           Int                 @id @default(autoincrement())
-  name                                String              
+  name                                String
   damage                              Int
   critical_chance                     Float
   WeaponBuff                          WeaponBuff[]
@@ -129,7 +129,7 @@ model WeaponDebuff {
 
 model WeaponEnhancement {
   weapon_id   Int
-  enhancement String 
+  enhancement String
   Weapon      Weapon @relation(fields: [weapon_id], references: [weapon_id])
 
   @@id([weapon_id, enhancement])
@@ -137,12 +137,12 @@ model WeaponEnhancement {
 
 model Player {
   player_id       Int    @id @default(autoincrement())
-  username        String 
-  profile_picture Bytes 
-  email           String 
-  password        String 
-  best_score      Int
-  best_runtime    Int
-  playtime        Int
-  savedata        Bytes
+  username        String
+  profile_picture Bytes?
+  email           String
+  password        String
+  best_score      Int?
+  best_runtime    Int?
+  playtime        Int?
+  savedata        Bytes?
 }
