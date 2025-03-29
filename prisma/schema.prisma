@@ -138,7 +138,7 @@ model WeaponEnhancement {
 model Player {
   player_id       Int    @id @default(autoincrement())
   username        String 
-  profile_picture Bytes
+  profile_picture Bytes 
   email           String 
   password        String 
   best_score      Int

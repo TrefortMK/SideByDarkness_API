@@ -15,7 +15,7 @@ const register = async (req, res) => {
         return res.json({ message: "Hiányos adatok!" });
     }
 
-    const user = await prisma.user.findFirst({
+    const user = await prisma.player.findFirst({
         where: {
             email: email
         }
@@ -28,11 +28,16 @@ const register = async (req, res) => {
     // password hash --> titkosítjuk a jelszót
     const hash = await argon2.hash(password);
 
-    const newUser = await prisma.user.create({
+    const newUser = await prisma.player.create({
         data: {
             email: email,
             username: username,
-            password: hash
+            password: hash,
+            profile_picture: null,
+            best_runtime: null,
+            best_score: null,
+            savedata: null,
+            playtime: null
         }
     });
 
@@ -50,7 +55,7 @@ const login = async (req, res) => {
             message: "Hiányzó adatok!"
         });
     }
-    const user = await prisma.user.findFirst({
+    const user = await prisma.player.findFirst({
         where: {
             email: email
         }
@@ -67,14 +72,14 @@ const login = async (req, res) => {
 
 
     //passMatch ? res.json({message: "Sikeres bejelentkezés!"}): res.json({message: "Helytelen jelszó!"})
-    const passMatch = await argon2.verify(user.password, password);
+    const passMatch = await argon2.verify(player.password, password);
 
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-        const token = generateToken(user.id)
+        const token = generateToken(player.id)
         return res.json({
             message: "Sikeres bejelentkezés!",
-            username: user.username,
+            username: player.username,
             token
         })
     } else {
@@ -91,7 +96,7 @@ const forgotPassword = async (req, res) => {
             message: "Hiányzó adatok!"
         });
     }
-    const user = await prisma.user.findFirst({
+    const user = await prisma.player.findFirst({
         where: {
             email: email
         }
@@ -115,9 +120,9 @@ const forgotPassword = async (req, res) => {
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
         
-        const updateUser = await prisma.user.update({
+        const updateUser = await prisma.player.update({
             where: {
-                id: user.id,
+                id: player.id,
                 email: email,
             },
             data: {
