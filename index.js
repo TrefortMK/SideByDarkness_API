@@ -5,7 +5,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 app.use("/user", require('./routes/userRoute'));
-//app.use("/items", require('./routes/itemWikiRoute'));
+app.use("/items", require('./routes/itemWikiRoute'));
 app.use("/leaderboard", require('./routes/leaderboardRoute'));
 
 const PORT = 8000;
