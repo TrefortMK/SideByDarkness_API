@@ -80,7 +80,7 @@ const login = async (req, res) => {
 
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-        const token = generateToken(user.id)
+        const token = generateToken(user.player_id)
         return res.json({
             message: "Sikeres bejelentkezés!",
             username: user.username,
@@ -100,12 +100,8 @@ const forgotPassword = async (req, res) => {
             message: "Hiányzó adatok!"
         });
     }
-    const user = await prisma.player.findFirst({
-        where: {
-            email: email
-        }
-    });
-
+    const user = req.user;
+    console.log(user);
 
     //if(!user) return res.json({message: "Nem létező fiók!"});
 
@@ -126,7 +122,7 @@ const forgotPassword = async (req, res) => {
 
         const updateUser = await prisma.player.update({
             where: {
-                id: user.id,
+                id: user.player_id,
                 email: email,
             },
             data: {
@@ -140,21 +136,24 @@ const forgotPassword = async (req, res) => {
         });
 
     } else {
-        return res.json({
-            message: "rossz a jelszo"
+        return res.status(401).json({
+            message: "Helytelen jelszó!"
         });
     }
 }
 
+function base64ToArrayBuffer(base64) {
+    var binaryString = atob(base64);
+    var bytes = new Uint8Array(binaryString.length);
+    for (var i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+    return bytes;
+}
+
 const imgUplad = async (req, res) => {
-    const { img } = req.body
-    const user = await prisma.player.findFirst({
-        where: {
-            email: email
-        }
-    });
-
-
+    const { img } = req.body;
+    const user = req.user;
 
     if (!user) {
         return res.status(400).json({
@@ -163,11 +162,11 @@ const imgUplad = async (req, res) => {
     } else {
 
         const updateUser = await prisma.player.update({
-            where:{
-                id: user.id,
+            where: {
+                player_id: user.player_id,
             },
             data: {
-                profile_picture: img,
+                profile_picture: base64ToArrayBuffer(img),
             }
 
         })
@@ -176,7 +175,18 @@ const imgUplad = async (req, res) => {
             message: "Sikeres képfeltöltés",
             updateUser
         });
+    }
+}
 
+const getImg = async (req, res) => {
+    const user = req.user;
+
+    if (!user) {
+        return res.status(400).json({
+            message: "Nem létező fiók!"
+        });
+    } else {
+        return res.json({ img: Buffer.from(user.profile_picture).toString('base64') })
     }
 }
 
@@ -184,6 +194,7 @@ module.exports = {
     register,
     login,
     forgotPassword,
-    imgUplad
+    imgUplad,
+    getImg
 }
 

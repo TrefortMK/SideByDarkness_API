@@ -5,13 +5,15 @@ const {
     register,
     login,
     forgotPassword,
-    imgUplad
+    imgUplad,
+    getImg
 } = require('../controllers/userController.js');
 
 router.post("/regisztracio", register);
 router.post("/login", login);
-router.post("/forgotpass", forgotPassword, protect);
-router.post("/imgupload", imgUplad, protect);
+router.post("/forgotpass", protect, forgotPassword);
+router.post("/imgupload", protect, imgUplad);
+router.get("/getimg", protect, getImg);
 
 
 module.exports = router
