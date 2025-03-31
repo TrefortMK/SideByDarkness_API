@@ -12,7 +12,7 @@ const register = async (req, res) => {
 
     // adat validáció
     if (!email || !username || !password) {
-        return res.json({ message: "Hiányos adatok!" });
+        return res.status(400).json({ message: "Hiányos adatok!" });
     }
 
     const user = await prisma.player.findFirst({
@@ -22,7 +22,7 @@ const register = async (req, res) => {
     });
 
     if (user) {
-        return res.json({ message: "Email-cím már használatban!" });
+        return res.status(409).json({ message: "Email-cím már használatban!" });
     }
 
     // password hash --> titkosítjuk a jelszót
@@ -51,7 +51,7 @@ const login = async (req, res) => {
     const { email, password } = req.body
     // procedurális email validálás
     if (!email || !password) {
-        return res.json({
+        return res.status(404).json({
             message: "Hiányzó adatok!"
         });
     }
@@ -65,25 +65,25 @@ const login = async (req, res) => {
     //if(!user) return res.json({message: "Nem létező fiók!"});
 
     if (!user) {
-        return res.json({
+        return res.status(404).json({
             message: "Nem létező fiók!"
         });
     }
 
 
     //passMatch ? res.json({message: "Sikeres bejelentkezés!"}): res.json({message: "Helytelen jelszó!"})
-    const passMatch = await argon2.verify(user.password, password);
+    const passMatch = await argon2.verify(player.password, password);
 
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-        const token = generateToken(user.id)
+        const token = generateToken(player.id)
         return res.json({
             message: "Sikeres bejelentkezés!",
-            username: user.username,
+            username: player.username,
             token
         })
     } else {
-        return res.json({
+        return res.status(401).json({
             message: "Helytelen jelszó!"
         });
     }
