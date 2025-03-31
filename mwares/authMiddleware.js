@@ -8,7 +8,7 @@ const protect = async (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1]
             const idFromToken = jwt.verify(token, "szupertitkostitok").id
-            req.user = await prisma.user.findFirst({
+            req.user = await prisma.player.findFirst({
                 where: {
                     id: idFromToken
                 }

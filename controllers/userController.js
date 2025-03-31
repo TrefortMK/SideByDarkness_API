@@ -17,7 +17,7 @@ const register = async (req, res) => {
     }
 
     if (!isValidEmail(email))
-        return res.status(422).json({message: "Az email-cím nem helyes!"});
+        return res.status(422).json({ message: "Az email-cím nem helyes!" });
 
     const user = await prisma.player.findFirst({
         where: {
@@ -123,10 +123,10 @@ const forgotPassword = async (req, res) => {
 
     if (passMatch) {
         // token --> hitelesítő eszköz --> kulcs
-        
+
         const updateUser = await prisma.player.update({
             where: {
-                id: player.id,
+                id: user.id,
                 email: email,
             },
             data: {
@@ -146,9 +146,44 @@ const forgotPassword = async (req, res) => {
     }
 }
 
+const imgUplad = async (req, res) => {
+    const { img } = req.body
+    const user = await prisma.player.findFirst({
+        where: {
+            email: email
+        }
+    });
+
+
+
+    if (!user) {
+        return res.status(400).json({
+            message: "Nem létező fiók!"
+        });
+    } else {
+
+        const updateUser = await prisma.player.update({
+            where:{
+                id: user.id,
+            },
+            data: {
+                profile_picture: img,
+            }
+
+        })
+
+        res.json({
+            message: "Sikeres képfeltöltés",
+            updateUser
+        });
+
+    }
+}
+
 module.exports = {
     register,
     login,
-    forgotPassword
+    forgotPassword,
+    imgUplad
 }
 
