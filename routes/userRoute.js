@@ -11,7 +11,7 @@ const {
 
 router.post("/regisztracio", register);
 router.post("/login", login);
-router.post("/forgotpass", protect, forgotPassword);
+router.post("/forgotpass", forgotPassword);
 router.post("/imgupload", protect, imgUplad);
 router.get("/getimg", protect, getImg);
 

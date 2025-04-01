@@ -9,6 +9,7 @@ const protect = async (req, res, next) => {
         try {
             token = req.headers.authorization.split(' ')[1];
             const idFromToken = jwt.verify(token, "szupertitkostitok").id;
+
             req.user = await prisma.player.findFirst({
                 where: {
                     player_id: idFromToken
@@ -17,12 +18,12 @@ const protect = async (req, res, next) => {
 
             next();
         } catch (error) {
-            res.status(401).json({ error: "Jelentkezzen be!" });
+            return res.status(401).json({ message: "Jelentkezzen be!" });
         }
     }
 
     if (!token) {
-        res.status(401).json({ message: "Jelentkezzen be!" });
+        return res.status(401).json({ message: "Jelentkezzen be!" });
     }
 }
 

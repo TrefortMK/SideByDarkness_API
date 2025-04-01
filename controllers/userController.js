@@ -96,17 +96,20 @@ const forgotPassword = async (req, res) => {
     const { email, password, newPassword } = req.body
     // procedurális email validálás
     if (!email || !password || !newPassword) {
-        return res.json({
+        return res.status(404).json({
             message: "Hiányzó adatok!"
         });
     }
-    const user = req.user;
-    console.log(user);
+    const user = await prisma.player.findFirst({
+        where: {
+            email: email
+        }
+    });
 
     //if(!user) return res.json({message: "Nem létező fiók!"});
 
     if (!user) {
-        return res.json({
+        return res.status(404).json({
             message: "Nem létező fiók!"
         });
     }
@@ -122,7 +125,7 @@ const forgotPassword = async (req, res) => {
 
         const updateUser = await prisma.player.update({
             where: {
-                id: user.player_id,
+                player_id: user.player_id,
                 email: email,
             },
             data: {
@@ -155,8 +158,14 @@ const imgUplad = async (req, res) => {
     const { img } = req.body;
     const user = req.user;
 
+    if (!img) {
+        return res.status(404).json({
+            message: "Hiányzó adatok!"
+        });
+    }
+
     if (!user) {
-        return res.status(400).json({
+        return res.status(404).json({
             message: "Nem létező fiók!"
         });
     } else {
@@ -186,7 +195,9 @@ const getImg = async (req, res) => {
             message: "Nem létező fiók!"
         });
     } else {
-        return res.json({ img: Buffer.from(user.profile_picture).toString('base64') })
+        if (user.profile_picture == null)
+            return res.status(400).json({ message: "Nincs profilkép!" });
+        return res.json({ message: "Profilkép sikeresen lekérve!", img: Buffer.from(user.profile_picture).toString('base64') })
     }
 }
 
