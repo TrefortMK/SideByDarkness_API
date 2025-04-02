@@ -197,8 +197,13 @@ const getImg = async (req, res) => {
     } else {
         if (user.profile_picture == null)
             return res.status(400).json({ message: "Nincs profilkép!" });
-        return res.json({ message: "Profilkép sikeresen lekérve!", img: Buffer.from(user.profile_picture).toString('base64') })
+        return res.json({ message: "Profilkép sikeresen lekérve!", img: Buffer.from(user.profile_picture).toString('base64') });
     }
+}
+
+const getUserByToken = async (req, res) => {
+    const user = req.user;
+    return res.json({ message: "Sikeres bejelentkezés!", user: user });
 }
 
 module.exports = {
@@ -206,6 +211,7 @@ module.exports = {
     login,
     forgotPassword,
     imgUplad,
-    getImg
+    getImg,
+    getUserByToken
 }
 
