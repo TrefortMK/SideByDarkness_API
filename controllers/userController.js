@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const argon2 = require('argon2');
 const { PrismaClient, Prisma } = require("@prisma/client");
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 var isValidEmail = require('is-valid-email');
 
 const generateToken = (id) => {
